@@ -17,37 +17,75 @@
 </div>
 
 <script>
+/*
+    This is the important function
+*/
+
+upgrade = function(el, dsrc, cb){
+	var canvas = document.createElement('canvas')
+      , ctx = canvas.getContext('2d')
+      , img2 = new Image()
+      , data1
+      , data2;
+    img2.onload = function(){
+        canvas.width = img2.width;
+        canvas.height = img2.height;
+
+        ctx.drawImage(el,0,0,img2.width,img2.height);
+        data1 = ctx.getImageData(0,0,img2.width,img2.height);
+    	ctx.drawImage(img2,0,0,img2.width,img2.height);
+		data2 = ctx.getImageData(0,0,img2.width,img2.height);
+
+        // Use the diff
+
+        for(var i=0;i<img2.width*img2.height;i++){
+            for(var j=0;j<3;j++){
+                data1.data[4*i+j] = Math.min(255,Math.max(0,(data1.data[4*i+j]+((data2.data[4*i+j]-127) || 0))));
+            }
+        }
+
+        ctx.putImageData(data1,0,0);
+        el.src = ctx.canvas.toDataURL();
+
+        if(cb) cb();
+    };
+    img2.src = dsrc;
+};
+
+/*
+    This stuff is not important, feel very free to ignore it
+*/
 window.onload = function(){
-	var img1 = document.getElementById('img1')
-	  , img2 = new Image()
-	  , img3 = new Image()
-	  , img4 = document.getElementById('img2')
+	var i1 = document.getElementById('img1')
+	  , i2 = new Image()
+	  , i3 = document.getElementById('img2')
 	  , start = new Date().getTime()
 	  , timer;
 	  
-	img1.onload=function(){
+	i2.onload=function(){
 		timer = new Date().getTime();
+		i1.src = i2.src;
 		document.getElementById("output1").innerHTML = "Low res image loaded (total: "+(timer-start)/1000+" secs)";
-		img2.onload=function(){
+		upgrade(i1,"images/small_city.jpg",function(){
 			timer = new Date().getTime();
 			document.getElementById("output1").innerHTML += "<br>Medium res image loaded (total: "+(timer-start)/1000+" secs)";
-			img3.onload=function(){
+			
+			upgrade(i1,"images/small_city.jpg",function(){
 				timer = new Date().getTime();
 				document.getElementById("output1").innerHTML += "<br>Final delta image loaded (total: "+(timer-start)/1000+" secs)";
 				document.getElementById("output2").innerHTML = "Running";
 				start = new Date().getTime();
 	
-				img4.onload=function(){
+				i3.onload=function(){
 					timer = new Date().getTime();
 					document.getElementById("output2").innerHTML = "Here's how long it would have taken to get any image without deltaImg (total: "+(timer-start)/1000+" secs)";
 				};
-				img4.src="images/big_city.jpg";
-			};
-			img3.src="images/small_city.jpg";
-		};
-		img2.src="images/small_city.jpg";
+				i3.src="images/big_city.jpg";
+			});
+			
+		});
 	};
-	img1.src="images/small_city.jpg";
+	i2.src="images/small_city.jpg";
 }
 
 </script>
