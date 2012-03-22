@@ -1,5 +1,5 @@
 ## Intro
-DeltaImg is a responsive image system that you can read about [here](http://hacks.philingrey.com/2012/03/deltaimg-resolution-and-bandwidth-responsive-images/), it has two parts:
+DeltaImg is a responsive image system that you can read about [here](http://hacks.philingrey.com/2012/03/deltaimg-resolution-and-bandwidth-responsive-images/) (plus live versions of the demos), it has two parts:
  *   A node.js script (create.js) to make the low-resolution and difference files
  *   A client side script (~500B) to stitch the images together
 
