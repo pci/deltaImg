@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>DeltaImg Test 1</title>
+    <link rel="stylesheet" type="text/css" href="style/main.css">
+</head>
+<body>
+<section class="c bodywidth">
+    <h2>Select a Kitty!</h2>
+    <ul class="c" style="width:150px;" id="kittyselector">
+        <li class="s2">1</li>
+        <li class="s2">2</li>
+        <li class="s2">3</li>
+    </ul>
+    <h2 class="cb">Delta Image:</h2>
+    <p id="upgradeButton" class="s1 c" style="width:200px;margin:0 auto;">Upgrade</p>
+    <img id="responsive" class="c" width="1024p×" height="512px" src="images/place_kitty_1_low.jpg" data-stage="0" data-kitty="1">
+    <h2>Original:</h2>
+    <img id="full" class="c" width="1024p×" height="512px" src="images/place_kitty_1.jpg">
+</section>
+
+<script>
+/*
+    This is the important function
+*/
+
+upgrade = function(el, dsrc, cb){
+	var canvas = document.createElement('canvas')
+      , ctx = canvas.getContext('2d')
+      , img2 = new Image()
+      , data1
+      , data2;
+    img2.onload = function(){
+        canvas.width = img2.width;
+        canvas.height = img2.height;
+
+        ctx.drawImage(el,0,0,img2.width,img2.height);
+        data1 = ctx.getImageData(0,0,img2.width,img2.height);
+    	ctx.drawImage(img2,0,0,img2.width,img2.height);
+		data2 = ctx.getImageData(0,0,img2.width,img2.height);
+
+        // Use the diff
+
+        for(var i=0;i<img2.width*img2.height;i++){
+            for(var j=0;j<3;j++){
+                data1.data[4*i+j] = Math.min(255,Math.max(0,(data1.data[4*i+j]+((data2.data[4*i+j]-127) || 0))));
+            }
+        }
+
+        ctx.putImageData(data1,0,0);
+        el.src = ctx.canvas.toDataURL();
+
+        if(cb) cb();
+    };
+    img2.src = dsrc;
+};
+
+/*
+    This stuff is not important, feel very free to ignore it
+*/
+
+upgrader = function(){
+    switch(++stage){
+        case 1: upgrade(document.getElementById('responsive'),'images/place_kitty_3_low_to_med_diff.jpg');
+                document.getElementById('upgradeButton').innerHTML = "Upgrade (again)";
+                break;
+        case 2: upgrade(document.getElementById('responsive'),'images/place_kitty_3_med_to_full_diff.jpg');
+                document.getElementById('upgradeButton').innerHTML = "Done!";
+                break;
+        default: break;
+    }
+}
+
+window.onload = function(){
+    document.getElementById("upgradeButton").addEventListener("click",function(e){
+        var el = document.getElementById('responsive');
+        switch(++el.dataset['stage']){
+            case 1: upgrade(document.getElementById('responsive'),'images/place_kitty_'+el.dataset['kitty']+'_low_to_med_diff.jpg');
+                    this.innerHTML = "Upgrade (again)";
+                    break;
+            case 2: upgrade(document.getElementById('responsive'),'images/place_kitty_'+el.dataset['kitty']+'_med_to_full_diff.jpg');
+                    this.innerHTML = "Done!";
+                    break;
+            default: break;
+        }
+    });
+
+    document.getElementById("kittyselector").addEventListener("click",function(e){
+        document.getElementById('responsive').src = "images/place_kitty_"+e.target.innerHTML+"_low.jpg";
+        document.getElementById('responsive').dataset['stage'] = 0;
+        document.getElementById('responsive').dataset['kitty'] = e.target.innerHTML;
+        document.getElementById("upgradeButton").innerHTML = "Upgrade";
+        document.getElementById('full').src = "images/place_kitty_"+e.target.innerHTML+".jpg";
+    });
+}
+
+</script>
+</body>
+</html>
