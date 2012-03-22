@@ -16,9 +16,9 @@
     </ul>
     <h2 class="cb">Delta Image:</h2>
     <p id="upgradeButton" class="s1 c" style="width:200px;margin:0 auto;">Upgrade</p>
-    <img id="responsive" class="c" width="1024p×" height="512px" src="images/place_kitty_1_low.jpg" data-stage="0" data-kitty="1">
+    <img id="responsive" class="c" width="1024p×" height="512px" src="images/test1/place_kitty_1_low.jpg" data-stage="0" data-kitty="1">
     <h2>Original:</h2>
-    <img id="full" class="c" width="1024p×" height="512px" src="images/place_kitty_1.jpg">
+    <img id="full" class="c" width="1024p×" height="512px" src="images/test1/place_kitty_1.jpg">
 </section>
 
 <script>
@@ -63,10 +63,10 @@ upgrade = function(el, dsrc, cb){
 
 upgrader = function(){
     switch(++stage){
-        case 1: upgrade(document.getElementById('responsive'),'images/place_kitty_3_low_to_med_diff.jpg');
+        case 1: upgrade(document.getElementById('responsive'),'images/test1/place_kitty_3_low_to_med_diff.jpg');
                 document.getElementById('upgradeButton').innerHTML = "Upgrade (again)";
                 break;
-        case 2: upgrade(document.getElementById('responsive'),'images/place_kitty_3_med_to_full_diff.jpg');
+        case 2: upgrade(document.getElementById('responsive'),'images/test1/place_kitty_3_med_to_full_diff.jpg');
                 document.getElementById('upgradeButton').innerHTML = "Done!";
                 break;
         default: break;
@@ -77,10 +77,10 @@ window.onload = function(){
     document.getElementById("upgradeButton").addEventListener("click",function(e){
         var el = document.getElementById('responsive');
         switch(++el.dataset['stage']){
-            case 1: upgrade(document.getElementById('responsive'),'images/place_kitty_'+el.dataset['kitty']+'_low_to_med_diff.jpg');
+            case 1: upgrade(document.getElementById('responsive'),'images/test1/place_kitty_'+el.dataset['kitty']+'_low_to_med_diff.jpg');
                     this.innerHTML = "Upgrade (again)";
                     break;
-            case 2: upgrade(document.getElementById('responsive'),'images/place_kitty_'+el.dataset['kitty']+'_med_to_full_diff.jpg');
+            case 2: upgrade(document.getElementById('responsive'),'images/test1/place_kitty_'+el.dataset['kitty']+'_med_to_full_diff.jpg');
                     this.innerHTML = "Done!";
                     break;
             default: break;
@@ -88,11 +88,11 @@ window.onload = function(){
     });
 
     document.getElementById("kittyselector").addEventListener("click",function(e){
-        document.getElementById('responsive').src = "images/place_kitty_"+e.target.innerHTML+"_low.jpg";
+        document.getElementById('responsive').src = "images/test1/place_kitty_"+e.target.innerHTML+"_low.jpg";
         document.getElementById('responsive').dataset['stage'] = 0;
         document.getElementById('responsive').dataset['kitty'] = e.target.innerHTML;
         document.getElementById("upgradeButton").innerHTML = "Upgrade";
-        document.getElementById('full').src = "images/place_kitty_"+e.target.innerHTML+".jpg";
+        document.getElementById('full').src = "images/test1/place_kitty_"+e.target.innerHTML+".jpg";
     });
 }
 

@@ -23,7 +23,7 @@ function downscale(filenamein, filenameout, resdrop, cb){
 
     var stream = canvas.createJPEGStream({
       bufsize : 2048,
-      quality : 100
+      quality : 80
     });
 
     out.on('close', function(){
@@ -74,7 +74,7 @@ function createDiffImg(imgsrc1, imgsrc2, outsrc, cb){
 
       var stream = canvas.createJPEGStream({
         bufsize : 2048,
-        quality : 100
+        quality : 80
       });
 
       out.on('close', function(){
