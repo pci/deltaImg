@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Test Implementation</title>
+</head>
+<body>
+<button onClick="upgrader();">Upgrade</button>
+<div id="output"></div>
+<img id="responsive" width="1024p×" height="684px" src="images/DSC_0006_low.jpg">
+
+<script>
+var stage=0;
+
+upgrader = function(){
+    switch(++stage){
+        case 1: upgrade(document.getElementById('responsive'),'images/DSC_0006_low_to_med_diff.jpg');
+                console.log('1');
+                break;
+        case 2: upgrade(document.getElementById('responsive'),'images/DSC_0006_med_to_full_diff.jpg');
+                console.log('2');
+                break;
+        default: break;
+    }
+}
+
+upgrade = function(el, dsrc){
+	var canvas = document.createElement('canvas')
+      , ctx = canvas.getContext('2d')
+      , img2 = new Image()
+      , data1
+      , data2;
+    img2.onload = function(){
+        canvas.width = img2.width;
+        canvas.height = img2.height;
+
+        ctx.drawImage(el,0,0,img2.width,img2.height);
+        data1 = ctx.getImageData(0,0,img2.width,img2.height);
+    	ctx.drawImage(img2,0,0,img2.width,img2.height);
+		data2 = ctx.getImageData(0,0,img2.width,img2.height);
+
+        // Use the diff
+
+        for(var i=0;i<img2.width*img2.height;i++){
+            for(var j=0;j<3;j++){
+                data1.data[4*i+j] = Math.min(255,Math.max(0,(data1.data[4*i+j]+((data2.data[4*i+j]-127)/2 || 0))));
+            }
+        }
+
+        ctx.putImageData(data1,0,0);
+        el.src = ctx.canvas.toDataURL();
+    };
+    img2.src = dsrc;
+};
+</script>
+</body>
+</html>
