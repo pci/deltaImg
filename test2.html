@@ -58,6 +58,8 @@ upgrade = function(el, dsrc, cb){
 window.onload = function(){
 	var i1 = document.getElementById('img1')
 	  , i2 = new Image()
+	  , i2a = new Image()
+	  , i2b = new Image()
 	  , i3 = document.getElementById('img2')
 	  , start = new Date().getTime()
 	  , timer;
@@ -66,24 +68,31 @@ window.onload = function(){
 		timer = new Date().getTime();
 		i1.src = i2.src;
 		document.getElementById("output1").innerHTML = "Low res image loaded (total: "+(timer-start)/1000+" secs / 88Kb)";
-		upgrade(i1,"images/test2/bridge_low_to_med_diff.jpg",function(){
+
+		i2a.onload=function(){
 			timer = new Date().getTime();
 			document.getElementById("output1").innerHTML += "<br>Medium res image loaded and computed (total: "+(timer-start)/1000+" secs / 321Kb)";
-			
-			upgrade(i1,"images/test2/bridge_med_to_full_diff.jpg",function(){
+
+			upgrade(i1,i2a.src);
+
+			i2b.onload=function(){
 				timer = new Date().getTime();
 				document.getElementById("output1").innerHTML += "<br>Final delta image loaded and computed(total: "+(timer-start)/1000+" secs / 1.3Mb)";
 				document.getElementById("output2").innerHTML = "Running";
 				start = new Date().getTime();
-	
+
+				upgrade(i1,i2b.src);
+
 				i3.onload=function(){
 					timer = new Date().getTime();
 					document.getElementById("output2").innerHTML = "Here's how long it would have taken to get any image without deltaImg (total: "+(timer-start)/1000+" secs / 5.3Mb)";
 				};
-				i3.src="images/test2/bridge.jpg";
-			});
-			
-		});
+				i3.src="images/test2/bridge.jpg";				
+
+			}
+			i2b.src="images/test2/bridge_med_to_full_diff.jpg";
+		}
+		i2a.src = "images/test2/bridge_low_to_med_diff.jpg";
 	};
 	i2.src="images/test2/bridge_low.jpg";
 }
